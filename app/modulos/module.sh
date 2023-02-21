@@ -3,11 +3,11 @@ read -p "¿Cúal es el nombre del archivo? " file
 read -p "¿Cúal es el nombre del módulo? " module
 
 mkdir ${file}
-mkdir ${file}/plugins
+mkdir ${file}/componentes
 
-touch ../view/${file}.php
+##touch ../view/${file}.php
 
-echo "<?php cargarview('$file'); ?>" >> ../view/${file}.php
+##echo "<?php cargarview('$file'); ?>" >> ../view/${file}.php
 
 touch ${file}/${file}.ajax.php
 touch ${file}/${file}.modelo.php
@@ -24,7 +24,7 @@ echo "
  *  Desarrollador: $USER
  *  Fecha de creación: $DIA $HORA
  *  Desarrollado por: Softmor
- *  Software de Morelos SA.DE.CV 
+ *  Softmor Tenonología de México S.A.S 
  *  Sitio web: https://softmor.com
  *  Facebook:  https://www.facebook.com/softmor/
  *  Instagram: http://instagram.com/softmormx
