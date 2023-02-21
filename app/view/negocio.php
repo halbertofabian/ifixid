@@ -7,9 +7,13 @@ $url = URL_IFIXID . 'softmor/public/api/v1/sucursal_all/' . $ifx_negocio;
 $res = file_get_contents($url);
 $scl_info = json_decode($res, true);
 
+
+
 if ($scl_info) :
-    $url_links = URL_IFIXID . 'softmor/public/api/v1/links/all/'.$scl_info['scl_id'];
-    $links = json_decode(file_get_contents($url_links),true);
+    $url_links = URL_IFIXID . 'softmor/public/api/v1/links/all/' . $scl_info['scl_id'];
+    $links = json_decode(file_get_contents($url_links), true);
+    $scl_especialidades = explode(",", $scl_info['scl_especialidades']);
+
 ?>
 
     <div class="content">
@@ -56,7 +60,7 @@ if ($scl_info) :
 
                                 <!-- <hr class="border-top border-dashed" /> -->
                                 <h6 class=" text-center">Siguenos en redes sociales</h6>
-                                <div class="d-flex gap-2 text-center">
+                                <div class="d-flex gap-2 text-center justify-content-center">
                                     <?php
                                     echo $facebook = $facebook != '' ? '<a href="' . $rds['facebook'] . '" target="_blank" title="Facebook" class="btn btn-falcon-default icon-item fs--2 icon-item-lg"><span class="fs-0 fab fa-facebook-f mr-1 text-primary"></span></a>' : '';
                                     echo $instagram = $instagram != '' ? '<a href="' . $rds['instagram'] . '" target="_blank" title="Instagram" class="btn btn-falcon-default icon-item fs--2 icon-item-lg"><span class="fs-0 fab fa-instagram mr-1 text-warning"></span></a>' : '';
@@ -77,36 +81,57 @@ if ($scl_info) :
         </div>
         <div class="row g-0">
             <div class="col-lg-8 pe-lg-2">
-                <div class="card mb-3">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0 text-center">¡Entérate del estado de tu servicio!</h5>
-                    </div>
-                    <div class="card-body text-justify">
-                        <div class="row">
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Ingresa el código del servicio" aria-label="Ingresa el código del servicio" aria-describedby="button-addon2">
-                                    <button class="btn btn-dark" type="button" id="button-addon2">Buscar</button>
+                <?php if (!empty($scl_info['scl_id_sucursal_sp'])) : ?>
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0 text-center">¡Entérate del estado de tu servicio!</h5>
+                        </div>
+                        <div class="card-body text-justify">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <input type="hidden" id="scl_id_sucursal_sp" value="<?= $scl_info['scl_id_sucursal_sp'] ?>">
+                                        <input type="text" class="form-control" id="srv_codigo" placeholder="Ingresa el código del servicio" aria-label="Ingresa el código del servicio" aria-describedby="button-addon2">
+                                        <button class="btn btn-dark btnConsultarInfo" type="button" id="button-addon2">Buscar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="card-footer text-center text-muted d-none status-empty">
+                            El código de servicio no existe.
+                        </div>
+                        <div class="card-footer bg-light p-0 border-top d-none statusInfo">
+                            <?php include_once 'app/view/status.php'; ?>
+                        </div>
+                        <script>
+                            $('.btnConsultarInfo').on('click', function() {
+                                var srv_codigo = $("#srv_codigo").val();
+                                var scl_id_sucursal_sp = $("#scl_id_sucursal_sp").val();
+                                var res = obtenerInformacion(srv_codigo, scl_id_sucursal_sp);
+                                if (res.status) {
+                                    $(".statusInfo").removeClass("d-none");
+                                    $(".status-empty").addClass("d-none");
+                                } else {
+                                    $(".statusInfo").addClass("d-none");
+                                    $(".status-empty").removeClass("d-none");
+                                }
+                            });
+                        </script>
                     </div>
-                    <div class="card-footer bg-light p-0 border-top">
-                    </div>
-                </div>
+                <?php endif; ?>
                 <div class="card mb-3 p-3">
                     <div class="card-body fs--1 pb-0">
                         <div class="row justify-content-center">
                             <?php
-                                foreach ($links as  $link):
+                            foreach ($links as  $link) :
                             ?>
-                            <div class="col-md-5 col-12 m-2 card ">
-                                <div class="d-flex position-relative align-items-center mt-3 mb-2"><img class="d-flex align-self-center me-2 rounded-3" src="<?= $link['lks_icono'] ?>" alt="" width="50" />
-                                    <div class="flex-1">
-                                        <h6 class="fs-0 mb-0 text-center"><a class="stretched-link text-decoration-none text-dark " href="<?= $link['lks_url'] ?>" target="_blank" > <strong style="font-size:16px"> <?= $link['lks_descripcion'] ?> </strong></a></h6>
+                                <div class="col-md-5 col-12 m-2 card ">
+                                    <div class="d-flex position-relative align-items-center mt-3 mb-2"><img class="d-flex align-self-center me-2 rounded-3" src="<?= $link['lks_icono'] ?>" alt="" width="50" />
+                                        <div class="flex-1">
+                                            <h6 class="fs-0 mb-0 text-center"><a class="stretched-link text-decoration-none text-dark " href="<?= $link['lks_url'] ?>" target="_blank"> <strong style="font-size:16px"> <?= $link['lks_descripcion'] ?> </strong></a></h6>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -129,6 +154,7 @@ if ($scl_info) :
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="ctn_nombre">Nombre <?= OBL ?></label>
+                                            <input type="hidden" name="scl_correo_contacto" value="<?= $scl_info['scl_correo_contacto'] ?>">
                                             <input type="text" name="ctn_nombre" id="ctn_nombre" class="form-control" placeholder="Ingresa tu nombre" required>
                                             <!-- <small id="helpId" class="text-muted">Help text</small> -->
 
@@ -140,7 +166,7 @@ if ($scl_info) :
                                                 <small id="helpId" class="text-muted">Indica cómo prefieres ser contactado.</small>
                                             </label>
                                             <select name="ctn_medio_contacto" id="ctn_medio_contacto" class="form-control" required>
-                                                <option value=""></option>
+                                                <option value="">-Seleccionar-</option>
                                                 <option value="W">WhatsApp</option>
                                                 <option value="T">Teléfono</option>
                                                 <option value="C">Correo</option>
@@ -148,7 +174,12 @@ if ($scl_info) :
                                         </div>
 
                                     </div>
-                                    <div class="col-12 mt-1">
+                                    <div class="col-4 mt-1 d-none ctn_codigo">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="ctn_codigo" name="ctn_codigo" value="<?= $scl_info['scl_codigo_pais'] ?>" placeholder="" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-1 ctn_contacto">
                                         <div class="form-group">
                                             <input type="text" class="form-control" id="ctn_contacto" name="ctn_contacto" placeholder="" required>
                                         </div>
@@ -163,7 +194,7 @@ if ($scl_info) :
                                         <small id="helpId" class="text-muted">Describe lo que te gustaría cotizar</small>
                                     </div>
                                     <div class="col-12">
-                                        <button type="submit" class="btn btn-primary float-end">Solicitar</button>
+                                        <button type="submit" class="btn btn-primary float-end btn-load">Solicitar</button>
                                     </div>
                                 </div>
                             </div>
@@ -178,14 +209,13 @@ if ($scl_info) :
                         <div class="card-body fs--1">
                             <div class="d-flex">
                                 <div class="flex-1 position-relative ps-3">
-                                    <span class="badge rounded-pill badge-soft-primary">Android</span>
-                                    <span class="badge rounded-pill badge-soft-secondary">ios</span>
-                                    <span class="badge rounded-pill badge-soft-success">Mac</span>
-                                    <span class="badge rounded-pill badge-soft-info">Software</span>
-                                    <span class="badge rounded-pill badge-soft-warning">Administación de correos</span>
-                                    <span class="badge rounded-pill badge-soft-danger">Hardware</span>
-                                    <span class="badge rounded-pill badge-soft-dark dark__bg-dark">Xbox</span>
-                                    <span class="badge rounded-pill badge-soft-dark">Play station</span>
+                                    <?php
+                                    foreach ($scl_especialidades as $epc) :
+                                        $random = rand(1, 8);
+                                        $color = AppControlador::coloresAleatorios($random);
+                                    ?>
+                                        <span class="badge rounded-pill badge-soft-<?= $color ?>"><?= $epc ?></span>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -223,17 +253,33 @@ if ($scl_info) :
             $("#ctn_contacto").attr("placeholder", 'Introduce el número de WhatsApp');
             $("#ctn_contacto").attr("type", 'number');
 
+            $(".ctn_codigo").removeClass("d-none");
+            $(".ctn_contacto").removeClass("col-12");
+            $(".ctn_contacto").addClass("col-8");
+
         } else if (opc == 'T') {
             $("#ctn_contacto").attr("placeholder", 'Introduce el número de Teléfono');
             $("#ctn_contacto").attr("type", 'number');
+
+            $(".ctn_codigo").addClass("d-none");
+            $(".ctn_contacto").removeClass("col-8");
+            $(".ctn_contacto").addClass("col-12");
 
         } else if (opc == 'C') {
             $("#ctn_contacto").attr("placeholder", 'Introduce tu correo electrónico');
             $("#ctn_contacto").attr("type", 'email');
 
+            $(".ctn_codigo").addClass("d-none");
+            $(".ctn_contacto").removeClass("col-8");
+            $(".ctn_contacto").addClass("col-12");
+
         } else {
             $("#ctn_contacto").attr("placeholder", '');
             $("#ctn_contacto").attr("type", 'text');
+
+            $(".ctn_codigo").addClass("d-none");
+            $(".ctn_contacto").removeClass("col-8");
+            $(".ctn_contacto").addClass("col-12");
         }
 
         $("#ctn_contacto").focus();
@@ -256,13 +302,20 @@ if ($scl_info) :
             processData: false,
             dataType: "json",
             beforeSend: function() {
-
+                startLoadButton()
             },
             success: function(res) {
+                stopLoadButton("Solicitar");
                 console.log(res);
                 if (res.status) {
                     swal("¡Muy bien!", res.mensaje, "success");
                     $("#formCotizacion")[0].reset();
+                    $("#ctn_contacto").attr("placeholder", '');
+                    $("#ctn_contacto").attr("type", 'text');
+
+                    $(".ctn_codigo").addClass("d-none");
+                    $(".ctn_contacto").removeClass("col-8");
+                    $(".ctn_contacto").addClass("col-12");
                 } else {
                     swal("¡Error!", res.mensaje, "success");
 

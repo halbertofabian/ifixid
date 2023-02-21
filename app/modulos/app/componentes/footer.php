@@ -1,4 +1,4 @@
-<footer class="footer ">
+<!-- <footer class="footer fixed-bottom">
     <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
         <div class="col-12 col-sm-auto text-center">
             <p class="mb-0 text-600">COPYRIGHT © IFIX ID <span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> 2023  <a href="https://softmor.com">Softmor Studios</a></p>
@@ -7,4 +7,11 @@
             <p class="mb-0 text-600">v5.0.0</p>
         </div>
     </div>
-</footer>
+</footer> -->
+<nav class="navbar fixed-bottom navbar-light bg-light">
+    <div class="container-fluid justify-content-center">
+        <div class="col-12 col-sm-auto text-center">
+            <p class="mb-0 text-600 ">COPYRIGHT © IFIX ID <span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> 2023 <a href="https://softmor.com">Softmor Studios</a> v5.0.0</p>
+        </div>
+    </div>
+</nav>

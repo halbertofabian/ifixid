@@ -38,4 +38,39 @@ class AppControlador
             );
         }
     }
+
+    public static function coloresAleatorios($random)
+    {
+        switch ($random) {
+            case 1:
+                $color = "primary";
+                break;
+            case 2:
+                $color = "secondary";
+                break;
+            case 3:
+                $color = "success";
+                break;
+            case 4:
+                $color = "info";
+                break;
+            case 5:
+                $color = "warning";
+                break;
+            case 6:
+                $color = "danger";
+                break;
+            case 7:
+                $color = "dark dark__bg-dark";
+                break;
+            case 8:
+                $color = "dark";
+                break;
+
+            default:
+                # code...
+                break;
+        }
+        return $color;
+    }
 }

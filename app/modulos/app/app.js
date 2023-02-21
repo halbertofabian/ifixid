@@ -20,5 +20,5 @@ function startLoadButton() {
 }
 function stopLoadButton(label) {
     $(".btn-load").attr("disabled", false);
-    $(".btn-load").html('ACEPTAR')
+    $(".btn-load").html(label)
 }
