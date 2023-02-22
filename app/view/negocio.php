@@ -2,7 +2,7 @@
 // http://localhost/softmorpos.com/softmor/public/api/v1/sucursal_all/ki
 
 // preArray($_GET);
-$ifx_negocio = explode('/', $_GET['ruta'])[0];
+$ifx_negocio = explode('/', $_GET['store'])[0];
 $url = URL_IFIXID . 'softmor/public/api/v1/sucursal_all/' . $ifx_negocio;
 $res = file_get_contents($url);
 $scl_info = json_decode($res, true);
@@ -10,6 +10,7 @@ $scl_info = json_decode($res, true);
 
 
 if ($scl_info) :
+    // preArray(explode('/', $_GET['store'])[1]);
     $url_links = URL_IFIXID . 'softmor/public/api/v1/links/all/' . $scl_info['scl_id'];
     $links = json_decode(file_get_contents($url_links), true);
     $scl_especialidades = explode(",", $scl_info['scl_especialidades']);
@@ -91,7 +92,8 @@ if ($scl_info) :
                                 <div class="col">
                                     <div class="input-group mb-3">
                                         <input type="hidden" id="scl_id_sucursal_sp" value="<?= $scl_info['scl_id_sucursal_sp'] ?>">
-                                        <input type="text" class="form-control" id="srv_codigo" placeholder="Ingresa el código del servicio" aria-label="Ingresa el código del servicio" aria-describedby="button-addon2">
+
+                                        <input type="text" class="form-control" id="srv_codigo" placeholder="Ingresa el código del servicio" value="<?= isset(explode('/', $_GET['store'])[1]) ? explode('/', $_GET['store'])[1] : '' ?>" aria-label="Ingresa el código del servicio" aria-describedby="button-addon2">
                                         <button class="btn btn-dark btnConsultarInfo" type="button" id="button-addon2">Buscar</button>
                                     </div>
                                 </div>
@@ -241,11 +243,24 @@ if ($scl_info) :
     </div>
 <?php endif; ?>
 
+<?php if (isset(explode('/', $_GET['store'])[1])) : ?>
+    <script>
+        $(document).ready(function() {
+            var srv_codigo = $("#srv_codigo").val();
+            var scl_id_sucursal_sp = $("#scl_id_sucursal_sp").val();
+            var res = obtenerInformacion(srv_codigo, scl_id_sucursal_sp);
+            if (res.status) {
+                $(".statusInfo").removeClass("d-none");
+                $(".status-empty").addClass("d-none");
+            } else {
+                $(".statusInfo").addClass("d-none");
+                $(".status-empty").removeClass("d-none");
+            }
+        })
+    </script>
+<?php endif; ?>
+
 <script>
-    $(document).ready(function() {
-
-    })
-
     $("#ctn_medio_contacto").on('change', function() {
 
         var opc = $(this).val();

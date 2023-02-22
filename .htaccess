@@ -5,5 +5,5 @@ Options All -Indexes
 RewriteEngine On
 
 
-RewriteRule ^([-a-zA-Z0-9/ÁÉÍÓÚáéíóú_=]+)$ index.php?ruta=$1
+RewriteRule ^([-a-zA-Z0-9/ÁÉÍÓÚáéíóú_=]+)$ index.php?store=$1
 
