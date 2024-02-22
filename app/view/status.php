@@ -102,6 +102,13 @@
     </div>
 </div>
 <script>
+    $(document).ready(function() {
+        var fragmentoURL = window.location.hash;
+        if (fragmentoURL.includes("ticket")) {
+            $('#ticket-tab').tab('show');
+        }
+    })
+
     function obtenerInformacion(srv_codigo, scl_id_sucursal_sp) {
         var respuesta;
         $.ajax({
