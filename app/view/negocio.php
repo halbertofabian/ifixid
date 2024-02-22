@@ -1,7 +1,7 @@
 <?php
 // http://localhost/softmorpos.com/softmor/public/api/v1/sucursal_all/ki
 
-//preArray($_GET);
+// preArray($_GET);
 $ifx_negocio = explode('/', $_GET['store'])[0];
 $url = URL_IFIXID . 'softmor/public/api/v1/sucursal_all/' . $ifx_negocio;
 $res = file_get_contents($url);

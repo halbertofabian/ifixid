@@ -11,6 +11,9 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="evidencias-tab" data-bs-toggle="tab" data-bs-target="#evidencias" type="button" role="tab" aria-controls="evidencias" aria-selected="false">Evidencias</button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ticket-tab" data-bs-toggle="tab" data-bs-target="#ticket" type="button" role="tab" aria-controls="ticket" aria-selected="false">Ticket</button>
+            </li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -82,9 +85,16 @@
                 </div>
             </div>
             <div class="tab-pane" id="evidencias" role="tabpanel" aria-labelledby="evidencias-tab">
-            <div class="card-body px-sm-4 px-md-8 px-lg-6 px-xxl-8">
+                <div class="card-body px-sm-4 px-md-8 px-lg-6 px-xxl-8">
                     <div class="timeline-vertical" id="data_evidences">
 
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="ticket" role="tabpanel" aria-labelledby="ticket-tab">
+                <div class="card-body px-sm-4 px-md-8 px-lg-6 px-xxl-8">
+                    <div class="timeline-vertical" id="data_ticket" style="height: 100vh;">
+                        <iframe src="" id="print_ticket" width="100%" height="100%" frameborder="0"></iframe>
                     </div>
                 </div>
             </div>
@@ -97,7 +107,7 @@
         $.ajax({
             async: false,
             type: 'GET',
-            url: 'https://app.softmor.com/api/public/get-data-serviceV2/' + scl_id_sucursal_sp + '/' + srv_codigo,
+            url: '<?= URL_SOFTMOR ?>' + 'api/public/get-data-serviceV2/' + scl_id_sucursal_sp + '/' + srv_codigo,
             dataType: 'json',
             processData: false,
             contentType: false,
@@ -190,6 +200,11 @@
                         }
                     });
                     $("#data_evidences").html(data_evidences);
+
+                    //ticket
+
+                    var ruta_ticket = '<?= URL_SOFTMOR ?>' + `/app/report/ticket_servicio_app.php?orden=${res.data_service.orden}&tipo=80mm&scl_id=${scl_id_sucursal_sp}`;
+                    $("#print_ticket").attr('src', ruta_ticket);
                 }
                 respuesta = res;
 
