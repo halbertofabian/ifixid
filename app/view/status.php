@@ -14,6 +14,9 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="ticket-tab" data-bs-toggle="tab" data-bs-target="#ticket" type="button" role="tab" aria-controls="ticket" aria-selected="false">Ticket</button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reseña-tab" data-bs-toggle="tab" data-bs-target="#reseña" type="button" role="tab" aria-controls="reseña" aria-selected="false">Reseña</button>
+            </li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
@@ -98,6 +101,32 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane" id="reseña" role="tabpanel" aria-labelledby="reseña-tab">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>¿Te gustaría dejarnos una reseña?</h3>
+                        <form id="formGuardarReseña" class="row g-3">
+                            <div class="col-12">
+                                <label for="rsñ_resena" class="form-label"></label>
+                                <textarea class="form-control" name="rsn_resena" id="rsn_resena" rows="3" placeholder="Escribe aquí tu reseña, nos ayudarías mucho a crecer" required></textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <h6>¿De 1 al 5 estrellas como calificas nuestro servicio?</h6>
+                                <div class="d-flex justify-content-center">
+                                    <div class="d-block" id="calificacion"></div>
+                                    <input type="hidden" id="rsn_srv_id" name="rsn_srv_id">
+                                    <input type="hidden" id="rsn_calificacion" name="rsn_calificacion">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary float-end">
+                                    Enviar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -122,6 +151,8 @@
                 var data_notas = "";
                 var data_evidences = "";
                 if (res.status) {
+                    console.log(res.data_resenas);
+                    $("#rsn_srv_id").val(res.data_service.srv_id);
                     $("#orden").text(res.data_service.orden);
                     $("#cliente").text(res.data_service.nombre);
                     $("#fecha_recepcion").text(res.data_service.srv_fecha_recepcion);
@@ -212,6 +243,24 @@
 
                     var ruta_ticket = '<?= URL_SOFTMOR ?>' + `/app/report/ticket_servicio_app.php?orden=${res.data_service.orden}&tipo=80mm&scl_id=${scl_id_sucursal_sp}`;
                     $("#print_ticket").attr('src', ruta_ticket);
+
+                    if (res.data_resenas) {
+                        $("#rsn_resena").val(res.data_resenas.rsn_resena);
+
+                        var rating = parseFloat(res.data_resenas.rsn_calificacion);
+                        var starRating1 = raterJs({
+                            starSize: 32,
+                            step:0.5,
+                            element: document.querySelector("#calificacion"),
+                            rating: rating, // Utiliza 'rating' en lugar de 'initialRating'
+                            rateCallback: function ratingCallback(rating, done) {
+                                this.clear();
+                                this.setRating(rating);
+                                done();
+                            }
+                        });
+                        $("#rsn_srv_id").val(res.data_resenas.rsn_srv_id);
+                    }
                 }
                 respuesta = res;
 
@@ -220,4 +269,29 @@
         });
         return respuesta;
     }
+
+
+    $('#formGuardarReseña').on('submit', function(e) {
+        e.preventDefault();
+        var scl_id = $("#scl_id_sucursal_sp").val();
+        var calificacion = $("#calificacion").attr('data-rating');
+        (calificacion == undefined) ? $("#rsn_calificacion").val(0): $("#rsn_calificacion").val(calificacion)
+        var datos = new FormData(this)
+        datos.append('scl_id', scl_id);
+        $.ajax({
+            type: 'POST',
+            url: '<?= URL_SOFTMOR ?>' + 'api/public/guardar/resena',
+            data: datos,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res.status) {
+                    toastr.success(res.mensaje, '¡Muy bien!');
+                } else {
+                    toastr.error(res.mensaje, '¡ERROR!');
+                }
+            }
+        });
+    });
 </script>
