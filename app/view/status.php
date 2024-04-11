@@ -119,6 +119,10 @@
                                 </div>
                             </div>
                             <div class="col-12">
+                                <button type="button" class="btn btn-danger float-start d-none btnEliminarResena">
+                                    Eliminar
+                                </button>
+
                                 <button type="submit" class="btn btn-primary float-end">
                                     Enviar
                                 </button>
@@ -244,13 +248,16 @@
                     var ruta_ticket = '<?= URL_SOFTMOR ?>' + `/app/report/ticket_servicio_app.php?orden=${res.data_service.orden}&tipo=80mm&scl_id=${scl_id_sucursal_sp}`;
                     $("#print_ticket").attr('src', ruta_ticket);
 
+
+                    //VALIDAR RESEÑAS   
+                    console.log(res.data_resenas)
                     if (res.data_resenas) {
                         $("#rsn_resena").val(res.data_resenas.rsn_resena);
 
                         var rating = parseFloat(res.data_resenas.rsn_calificacion);
                         var starRating1 = raterJs({
                             starSize: 32,
-                            step:0.5,
+                            step: 0.5,
                             element: document.querySelector("#calificacion"),
                             rating: rating, // Utiliza 'rating' en lugar de 'initialRating'
                             rateCallback: function ratingCallback(rating, done) {
@@ -259,7 +266,20 @@
                                 done();
                             }
                         });
-                        $("#rsn_srv_id").val(res.data_resenas.rsn_srv_id);
+                        $(".btnEliminarResena").removeClass('d-none');
+                    } else {
+                        $("#rsn_resena").val("");
+                        var starRating1 = raterJs({
+                            starSize: 32,
+                            step: 0.5,
+                            element: document.querySelector("#calificacion"),
+                            rateCallback: function ratingCallback(rating, done) {
+                                this.clear();
+                                this.setRating(rating);
+                                done();
+                            }
+                        });
+                        $(".btnEliminarResena").addClass('d-none');
                     }
                 }
                 respuesta = res;
@@ -288,10 +308,75 @@
             success: function(res) {
                 if (res.status) {
                     toastr.success(res.mensaje, '¡Muy bien!');
+
+                    // Obtener el elemento padre del elemento #calificacion
+                    var padre = document.getElementById("calificacion").parentNode;
+
+                    // Crear un nuevo elemento div
+                    var nuevoElemento = document.createElement("div");
+                    nuevoElemento.id = "calificacion";
+
+                    // Reemplazar el elemento #calificacion con el nuevo elemento
+                    padre.replaceChild(nuevoElemento, document.getElementById("calificacion"));
+
+
+
+
+
+                    var srv_codigo = $("#srv_codigo").val();
+                    obtenerInformacion(srv_codigo, scl_id);
                 } else {
                     toastr.error(res.mensaje, '¡ERROR!');
                 }
             }
         });
+    });
+
+    $(document).on('click', '.btnEliminarResena', function(e) {
+        var rsn_srv_id = $("#rsn_srv_id").val();
+        var scl_id = $("#scl_id_sucursal_sp").val();
+        swal({
+            title: '¿Esta seguro de eliminar la reseña?',
+            text: 'Esta accion no es reversible',
+            icon: 'warning',
+            buttons: ['No', 'Si, eliminar reseña'],
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                var datos = new FormData();
+                datos.append('rsn_srv_id', rsn_srv_id);
+                datos.append('scl_id', scl_id);
+                datos.append('btnEliminarResena', true);
+                $.ajax({
+                    type: 'POST',
+                    url: '<?= URL_SOFTMOR ?>' + 'api/public/eliminar/resena',
+                    data: datos,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res) {
+                            toastr.success('La reseña se elimino correctamente', '¡Muy bien!');
+                            // Obtener el elemento padre del elemento #calificacion
+                            var padre = document.getElementById("calificacion").parentNode;
+
+                            // Crear un nuevo elemento div
+                            var nuevoElemento = document.createElement("div");
+                            nuevoElemento.id = "calificacion";
+
+                            // Reemplazar el elemento #calificacion con el nuevo elemento
+                            padre.replaceChild(nuevoElemento, document.getElementById("calificacion"));
+
+
+                            var srv_codigo = $("#srv_codigo").val();
+                            obtenerInformacion(srv_codigo, scl_id);
+                        } else {
+                            toastr.error('Hubo un error al eliminar la reseña', '¡ERROR!');
+                        }
+                    }
+                });
+            } else {}
+        });
+
     });
 </script>
