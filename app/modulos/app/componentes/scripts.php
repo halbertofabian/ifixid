@@ -12,4 +12,4 @@
 <script src="<?= HTTP_HOST . 'public/' ?>vendors/rater-js/index.js"></script>
 <script src="<?= HTTP_HOST ?>app/modulos/app/scripts/sweetalert.min.js"></script>
 <script src="<?= HTTP_HOST ?>app/modulos/app/scripts/toastr.min.js"></script>
-<script src="<?= HTTP_HOST ?>app/modulos/app/app.js"></script>
+<script src="<?= HTTP_HOST ?>app/modulos/app/app.js?v=1.00"></script>
