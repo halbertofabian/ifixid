@@ -18,7 +18,6 @@ else :
                 <div class="col">
                     <div class="input-group mb-3">
                         <input type="hidden" id="scl_id_sucursal_sp" value="<?= explode('/', $_GET['store'])[1] ?>">
-
                         <input type="text" class="form-control" id="srv_codigo" placeholder="Ingresa el código del servicio" value="<?= isset(explode('/', $_GET['store'])[2]) ? explode('/', $_GET['store'])[2] : '' ?>" aria-label="Ingresa el código del servicio" aria-describedby="button-addon2">
                         <button class="btn btn-dark btnConsultarInfo" type="button" id="button-addon2">Buscar</button>
                     </div>
@@ -37,6 +36,7 @@ else :
             $(document).ready(function() {
                 var srv_codigo = $("#srv_codigo").val();
                 var scl_id_sucursal_sp = $("#scl_id_sucursal_sp").val();
+
                 var res = obtenerInformacion(srv_codigo, scl_id_sucursal_sp);
                 if (res.status) {
                     $(".statusInfo").removeClass("d-none");

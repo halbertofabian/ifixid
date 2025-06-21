@@ -12,6 +12,7 @@
 
 var urlApp = $(".urlApp").attr("urlApp");
 var urlAPI = $(".urlAPI").attr("urlAPI");
+var urlIfixid = $(".urlIfixid").attr("urlIfixid");
 
 function startLoadButton() {
     $(".btn-load").attr("disabled", true);

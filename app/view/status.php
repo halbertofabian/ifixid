@@ -147,7 +147,7 @@
         $.ajax({
             async: false,
             type: 'GET',
-            url: '<?= URL_SOFTMOR ?>' + 'api/public/get-data-serviceV2/' + scl_id_sucursal_sp + '/' + srv_codigo,
+            url: urlIfixid + 'api/public/get-data-serviceV2/' + scl_id_sucursal_sp + '/' + srv_codigo,
             dataType: 'json',
             processData: false,
             contentType: false,
@@ -155,7 +155,7 @@
                 var data_notas = "";
                 var data_evidences = "";
                 if (res.status) {
-                    console.log(res.data_resenas);
+                    // console.log(res.data_resenas);
                     $("#rsn_srv_id").val(res.data_service.srv_id);
                     $("#orden").text(res.data_service.orden);
                     $("#cliente").text(res.data_service.nombre);
@@ -245,12 +245,12 @@
 
                     //ticket
 
-                    var ruta_ticket = '<?= URL_SOFTMOR ?>' + `/app/report/ticket_servicio_app.php?orden=${res.data_service.orden}&tipo=80mm&scl_id=${scl_id_sucursal_sp}`;
+                    var ruta_ticket = urlIfixid + `/app/report/ticket_servicio_app.php?orden=${res.data_service.orden}&tipo=80mm&scl_id=${scl_id_sucursal_sp}`;
                     $("#print_ticket").attr('src', ruta_ticket);
 
 
                     //VALIDAR RESEÑAS   
-                    console.log(res.data_resenas)
+                    // console.log(res.data_resenas)
                     if (res.data_resenas) {
                         $("#rsn_resena").val(res.data_resenas.rsn_resena);
 
@@ -300,7 +300,7 @@
         datos.append('scl_id', scl_id);
         $.ajax({
             type: 'POST',
-            url: '<?= URL_SOFTMOR ?>' + 'api/public/guardar/resena',
+            url: urlIfixid + 'api/public/guardar/resena',
             data: datos,
             dataType: 'json',
             processData: false,
@@ -349,7 +349,7 @@
                 datos.append('btnEliminarResena', true);
                 $.ajax({
                     type: 'POST',
-                    url: '<?= URL_SOFTMOR ?>' + 'api/public/eliminar/resena',
+                    url: urlIfixid + 'api/public/eliminar/resena',
                     data: datos,
                     dataType: 'json',
                     processData: false,

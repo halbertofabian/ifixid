@@ -1,6 +1,7 @@
 <body>
     <div class="urlApp" urlApp="<?= HTTP_HOST ?>"></div>
     <div class="urlAPI" urlAPI="<?= URL_API ?>"></div>
+    <div class="urlIfixid" urlIfixid="<?= isset(explode('/', $_GET['store'])[3]) ? URL_SOFTMOR_V7 : URL_SOFTMOR ?>"></div>
     <!-- ===============================================-->
     <!--    Main Content-->
     <!-- ===============================================-->
